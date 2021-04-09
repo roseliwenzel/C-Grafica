@@ -1,0 +1,17 @@
+
+espaço -> gira tronco 
+	q	-> movimento frente tras braço direito
+	a	-> movimento abre braço direito
+	z   -> movimento antebraço direito
+	
+	w 	-> movimento frente tras braço esquerdo
+	s 	-> movimento abre braço esquerdo
+	r	-> movimento antebraço esquerdo
+
+	e 	-> movimento frente tras perna direita
+	d 	-> movimento abre perna direita
+	c	-> movimento canela direita
+
+	r 	-> movimento frente tras perna esquerdo
+	f 	-> movimento abre perna esquerdo
+	v	-> movimento canela esquerdo
