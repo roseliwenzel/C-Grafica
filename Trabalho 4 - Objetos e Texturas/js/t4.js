@@ -16,6 +16,44 @@ var geometriaA;
 var objLoading = function(){
 	loader = new THREE.OBJLoader();
 
+	//carregando Cientista
+	loader.load(
+		'assets/Scientist.obj',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['cien'] = obj;
+
+			 obj.traverse( function (child){
+					if (child instanceof THREE.Mesh){
+						child.material = new THREE.MeshStandardMaterial({
+							map: new THREE.TextureLoader().load("assets/texturas/Scientist.png")}
+						);
+					}
+				}
+			); 
+
+			 obj.scale.y = 3;
+			 obj.scale.z = 3;
+			 obj.scale.x = 3;
+
+			obj.position.y = -4.3;
+			obj.position.x = 0;
+			obj.position.z = 0;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Cientista");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Cientista: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Cientista!: "+ error);
+		}//o que acontece se der merda.
+	);
+
 	// carrega ninja
 	/* loader.load(
 		'assets/ninja/ninjaHead_Low.obj',//arquivo que vamos buscar
@@ -119,17 +157,24 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	); */
 
- 	// carrega rinoceronte 
+ 	// carrega rinoceronte , DEU PROBLEMA NA TEXTURA, NÃO PODE USAR
 	/* loader.load(
 		'assets/Rhino.obj',//arquivo que vamos buscar
 		function(obj){
 			//atribui a cena, colore, reposiciona, rotaciona
 			elementos['rhino'] = obj;
 
-			let texLoader = new THREE.TextureLoader().setPath("assets/cerberus/");
-
-
+			//let texLoader = new THREE.TextureLoader().setPath("assets/texturas/");
 			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/Rhino.png")}
+					);
+				}
+			}
+			);
+
+			 obj.traverse( function (child){
 					if (child instanceof THREE.Mesh){
 						let material = new THREE.MeshLambertMaterial({ color: 'purple' });
 						let materialBase = texLoader.load("Rhino.png");
@@ -144,7 +189,7 @@ var objLoading = function(){
 						child.material = material;
 					}
 				}
-			);
+			); 
 			obj.scale.y = 6;
 			obj.scale.z = 6;
 			obj.scale.x = 6;
@@ -169,7 +214,7 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	); */
 
-	// carrega búfalo 
+	// carrega búfalo, DEU PROBLEMA NA TEXTURA, NÃO PODE USAR
 	/* loader.load(
 		'assets/Bizon.obj',//arquivo que vamos buscar
 		function(obj){
@@ -251,10 +296,12 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	);
 
+	
 
-	//carregando ouriço
-	loaderFBX.load(
-		'assets/Hadgehog.fbx',//arquivo que vamos buscar
+
+	//carregando ouriço DEU PROBLEMA NA TEXTURA, NÃO PODE USAR
+	/* loader.load(
+		'assets/Hadgehog.obj',//arquivo que vamos buscar
 		function(obj){
 			//atribui a cena, colore, reposiciona, rotaciona
 			elementos['ourico'] = obj;
@@ -262,15 +309,15 @@ var objLoading = function(){
 			obj.traverse( function (child){
 					if (child instanceof THREE.Mesh){
 						child.material = new THREE.MeshStandardMaterial({
-							map: new THREE.TextureLoader().load("assets/Hadgehog_texture.png")}
+							map: new THREE.TextureLoader().load("assets/texturas/Hadgehog_texture.png")}
 						);
 					}
 				}
 			);
 
-					obj.scale.y = 0.05;
-					obj.scale.z = 0.05;
-					obj.scale.x = 0.05;
+					obj.scale.y = 2;
+					obj.scale.z = 2;
+					obj.scale.x = 2;
 					
 					obj.position.x = 0;
 					obj.position.y = 0;
@@ -290,9 +337,9 @@ var objLoading = function(){
 				function(error){
 					console.log(" Deu merda ouriço!: "+ error);
 				}//o que acontece se der merda.
-			);
+			); */
 
-	// carrega dragão
+	// carrega dragão, VER PROBLEMA DO LOG -->> FBXLoader.js:620 THREE.FBXLoader: SpecularFactor map is not supported in three.js, skipping texture.
 	/* loaderFBX.load(
 		'assets/dragon/Dragon.fbx',//arquivo que vamos buscar
 		function(obj){
@@ -300,23 +347,13 @@ var objLoading = function(){
 			elementos['dragon'] = obj;
 
 			obj.traverse( function (child){
-					if (child instanceof THREE.Mesh){
-						child.material = new THREE.MeshStandardMaterial({
-							map: new THREE.TextureLoader().load("assets/dragon/Dragon_Nor_mirror2.jpg")
-						}
-						);
-						// Dragon_Bump_Col2.jpg
-						child.material = new THREE.MeshStandardMaterial({
-							map: new THREE.TextureLoader().load("assets/dragon/Dragon_Bump_Col2.jpg")}
-						);
-
-						/* child.material = new THREE.MeshStandardMaterial({
-							map: new THREE.TextureLoader().load("assets/dragon/Dragon_ground_color.jpg")}
-						);
-
-						
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/dragon/Dragon_Bump_Col2.jpg")
 					}
+					);	
 				}
+			}
 			);
 
 			 obj.scale.y = 1;
@@ -330,14 +367,14 @@ var objLoading = function(){
 			//obj.rotation.x-=1.35;
 
 			scene.add(obj);
-			console.log("Carregou Ovelha");
+			console.log("Carregou Dragão");
 
 		},//Oque acontece quando terminar!
 		function(andamento){
-			console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
+			console.log("Carregou Dragão: " + (andamento.loaded / andamento.total)*100 + " %" );
 		},//O que acontece enquanto esta carregando
 		function(error){
-			console.log(" Deu merda!: "+ error);
+			console.log(" Deu merda Dragão!: "+ error);
 		}//o que acontece se der merda.
 	); */
 
