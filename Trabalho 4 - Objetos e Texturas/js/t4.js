@@ -216,7 +216,7 @@ var objLoading = function(){
 
 
 	let loaderFBX = new THREE.FBXLoader();
-	//carregando Ovelha
+	/* //carregando Ovelha
 	loaderFBX.load(
 		'assets/Sheep.fbx',//arquivo que vamos buscar
 		function(obj){
@@ -252,9 +252,9 @@ var objLoading = function(){
 		function(error){
 			console.log(" Deu merda!: "+ error);
 		}//o que acontece se der merda.
-	);
+	); */
 
-	//carregando Fenix
+	//carregando Fenix 1
 	loaderFBX.load(
 		'assets/Phoenix.fbx',//arquivo que vamos buscar
 		function(obj){
@@ -274,9 +274,9 @@ var objLoading = function(){
 			 obj.scale.z = 0.03;
 			 obj.scale.x = 0.03;
 
-			obj.position.y = -4.3;
-			obj.position.x = 15;
-			obj.position.z = 0;
+			obj.position.y = -10;
+			obj.position.x = 40;
+			obj.position.z = -1.5;
 
 			//obj.rotation.x-=1.35;
 
@@ -289,6 +289,43 @@ var objLoading = function(){
 		},//O que acontece enquanto esta carregando
 		function(error){
 			console.log(" Deu merda Fenix!: "+ error);
+		}//o que acontece se der merda.
+	);
+	//carregando Fenix 2
+	loaderFBX.load(
+		'assets/Phoenix.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['fenix2'] = obj;
+
+			 obj.traverse( function (child){
+					if (child instanceof THREE.Mesh){
+						child.material = new THREE.MeshStandardMaterial({
+							map: new THREE.TextureLoader().load("assets/texturas/Phoenix_texture.png")}
+						);
+					}
+				}
+			); 
+
+			obj.scale.y = 0.03;
+			obj.scale.z = 0.03;
+			obj.scale.x = 0.03;
+
+			obj.position.x = -45;
+			obj.position.y = -10;
+			obj.position.z = -1.5;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Fenix 2");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Fenix 2: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Fenix 2!: "+ error);
 		}//o que acontece se der merda.
 	);
 
@@ -309,9 +346,9 @@ var objLoading = function(){
 		); 
 
 
-			obj.scale.y = 0.08;
-			obj.scale.z = 0.08;
-			obj.scale.x = 0.08;
+			obj.scale.y = 0.2;
+			obj.scale.z = 0.2;
+			obj.scale.x = 0.2;
 
 			obj.position.y = -7.5;
 			obj.position.z = -30;
@@ -331,85 +368,241 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	);
 
-
-	//carregando ouriço DEU PROBLEMA NA TEXTURA, NÃO PODE USAR
-	/* loader.load(
-		'assets/Hadgehog.obj',//arquivo que vamos buscar
+	// carrega Lagarto 1
+	loaderFBX.load(
+		'assets/Lizard.fbx',//arquivo que vamos buscar
 		function(obj){
 			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['ourico'] = obj;
+			elementos['lizard'] = obj;
+
+			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/Lizard_texture.png")}
+					);
+				}
+			}
+		); 
+
+
+			obj.scale.y = 0.003;
+			obj.scale.z = 0.003;
+			obj.scale.x = 0.003;
+
+			obj.position.y = -7.5;
+			obj.position.z = 0;
+			obj.position.x = 40;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Lagarto 1!");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Lagarto 1: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Lagarto 1!: "+ error);
+		}//o que acontece se der merda.
+	);
+
+	// carrega Lagarto 2
+	loaderFBX.load(
+		'assets/Lizard.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['lizard2'] = obj;
+
+			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/Lizard_texture.png")}
+					);
+				}
+			}
+		); 
+
+
+			obj.scale.y = 0.003;
+			obj.scale.z = 0.003;
+			obj.scale.x = 0.003;
+
+			obj.position.x = -45;
+			obj.position.y = -7.5;
+			obj.position.z = 0;
+		
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Lagarto 2!");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Lagarto 2: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Lagarto 2!: "+ error);
+		}//o que acontece se der merda.
+	);
+
+	// carrega Mago
+	loaderFBX.load(
+		'assets/Wizard.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['wizard'] = obj;
+
+			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/UVWizard.png")}
+					);
+				}
+			}
+		); 
+
+
+			obj.scale.y = 0.02;
+			obj.scale.z = 0.02;
+			obj.scale.x = 0.02;
+
+			obj.position.x = 65;
+			obj.position.y = -8;
+			obj.position.z = 0;
+		
+			obj.rotation.y-=4;
+
+			scene.add(obj);
+			console.log("Carregou Mago!");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Mago: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Mago!: "+ error);
+		}//o que acontece se der merda.
+	);
+
+
+	//carregando morcego
+	loaderFBX.load(
+		'assets/Bat_Rigged.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['bat'] = obj;
 
 			obj.traverse( function (child){
 					if (child instanceof THREE.Mesh){
 						child.material = new THREE.MeshStandardMaterial({
-							map: new THREE.TextureLoader().load("assets/texturas/Hadgehog_texture.png")}
+							map: new THREE.TextureLoader().load("assets/texturas/UVBat.png")}
 						);
 					}
 				}
 			);
 
-					obj.scale.y = 2;
-					obj.scale.z = 2;
-					obj.scale.x = 2;
-					
-					obj.position.x = 0;
-					obj.position.y = 0;
-					obj.position.z = 0;
+			obj.scale.y = 0.04;
+			obj.scale.z = 0.04;
+			obj.scale.x = 0.04;
+			
+			obj.position.x = 65;
+			obj.position.y = 10;
+			obj.position.z = -20;
 
-					obj.rotation.x = 0;
-					obj.rotation.z = 0;
-					obj.rotation.y = 0;
+			obj.rotation.x = 0;
+			obj.rotation.z = 0;
+			obj.rotation.y = 0;
 
-					scene.add(obj);
-					console.log("Carregou ouriço!");
+			scene.add(obj);
+			console.log("Carregou morcego!");
 
-				},//Oque acontece quando terminar!
-				function(andamento){
-					console.log("Carregou ouriço: " + (andamento.loaded / andamento.total)*100 + " %" );
-				},//O que acontece enquanto esta carregando
-				function(error){
-					console.log(" Deu merda ouriço!: "+ error);
-				}//o que acontece se der merda.
-			); */
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou morcego: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda morcego!: "+ error);
+		}//o que acontece se der merda.
+		);
 
-	// carrega dragão, VER PROBLEMA DO LOG -->> FBXLoader.js:620 THREE.FBXLoader: SpecularFactor map is not supported in three.js, skipping texture.
-	/* loaderFBX.load(
-		'assets/dragon/Dragon.fbx',//arquivo que vamos buscar
+	// carrega urso
+	loaderFBX.load(
+		'assets/Bear.FBX',//arquivo que vamos buscar
 		function(obj){
 			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['dragon'] = obj;
+			elementos['bear'] = obj;
 
 			obj.traverse( function (child){
 				if (child instanceof THREE.Mesh){
 					child.material = new THREE.MeshStandardMaterial({
-						map: new THREE.TextureLoader().load("assets/dragon/Dragon_Bump_Col2.jpg")
+						map: new THREE.TextureLoader().load("assets/texturas/UVBear.png")
 					}
 					);	
 				}
 			}
 			);
 
-			 obj.scale.y = 1;
-			 obj.scale.z = 1;
-			 obj.scale.x = 1;
+			 obj.scale.y = 0.01;
+			 obj.scale.z = 0.01;
+			 obj.scale.x = 0.01;
 
-			obj.position.y = -7.6;
-			obj.position.x = -10;
+			obj.position.y = -7.7;
+			obj.position.x = -11;
 			obj.position.z = 0;
 
 			//obj.rotation.x-=1.35;
 
 			scene.add(obj);
-			console.log("Carregou Dragão");
+			console.log("Carregou urso");
 
 		},//Oque acontece quando terminar!
 		function(andamento){
-			console.log("Carregou Dragão: " + (andamento.loaded / andamento.total)*100 + " %" );
+			console.log("Carregou urso: " + (andamento.loaded / andamento.total)*100 + " %" );
 		},//O que acontece enquanto esta carregando
 		function(error){
-			console.log(" Deu merda Dragão!: "+ error);
+			console.log(" Deu merda urso!: "+ error);
 		}//o que acontece se der merda.
-	); */
+	);
+
+	// carrega gnomo
+	loaderFBX.load(
+		'assets/Goblin.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['goblin'] = obj;
+
+			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/Goblin_texture.png")
+					}
+					);	
+				}
+			}
+			);
+
+			 obj.scale.y = 0.001;
+			 obj.scale.z = 0.001;
+			 obj.scale.x = 0.001;
+
+			obj.position.y = -7.7;
+			obj.position.x = -10;
+			obj.position.z = 20;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou gnomo");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou gnomo: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda gnomo!: "+ error);
+		}//o que acontece se der merda.
+	);
 
 };
 
@@ -447,19 +640,40 @@ var createGui = function (){
 		}
 	);
 
-	let opcoes = ['cientista','fenix', 'godzilla'];
+	let opcoes = ['cientista', 'godzilla', 'fenix 1', 'lagarto 1', 'fenix 2', 'lagarto 2', 'mago', 'morcego', 'urso', 'pedra', 'gnomo'];
 	let comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos");
 	comboChange.onChange(function(parametro){
 			if (parametro == 'cientista'){
 				camera.lookAt(elementos["cien"].position);
 				parametrosGUI.modelGui = "cien";
-			}else if (parametro == 'fenix'){
+			}else if (parametro == 'fenix 1'){
 				camera.lookAt(elementos["fenix"].position);
-				parametrosGUI.modelGui = "tri";
+				parametrosGUI.modelGui = "fenix";
 			}else if (parametro == 'godzilla'){
 				camera.lookAt(elementos["god"].position);
 				parametrosGUI.modelGui = "god";
-			} 
+			}else if (parametro == 'lagarto 1'){
+				camera.lookAt(elementos["lizard"].position);
+				parametrosGUI.modelGui = "lizard";
+			}else if (parametro == 'fenix 2'){
+				camera.lookAt(elementos["fenix2"].position);
+				parametrosGUI.modelGui = "fenix2";
+			}else if (parametro == 'lagarto 2'){
+				camera.lookAt(elementos["lizard2"].position);
+				parametrosGUI.modelGui = "lizard2";
+			}else if (parametro == 'mago'){
+				camera.lookAt(elementos["wizard"].position);
+				parametrosGUI.modelGui = "wizard";
+			}else if (parametro == 'morcego'){
+				camera.lookAt(elementos["bat"].position);
+				parametrosGUI.modelGui = "bat";
+			}else if (parametro == 'urso'){
+				camera.lookAt(elementos["bear"].position);
+				parametrosGUI.modelGui = "bear";
+			}else if (parametro == 'gnomo'){
+				camera.lookAt(elementos["goblin"].position);
+				parametrosGUI.modelGui = "goblin";
+			}
 		}
 	);
 	let folderPosition = gui.addFolder("Position");
