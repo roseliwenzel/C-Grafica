@@ -54,51 +54,9 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	);
 
-	// carrega ninja
-	/* loader.load(
-		'assets/ninja/ninjaHead_Low.obj',//arquivo que vamos buscar
-		function(obj){
-			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['ninja'] = obj;
-
-			let texLoader = new THREE.TextureLoader().setPath("assets/ninja/");
+	
 
 
-			obj.traverse( function (child){
-					if (child instanceof THREE.Mesh){
-						let material = new THREE.MeshStandardMaterial();
-						material.map = texLoader.load("ao.jpg");
-						material.normalMap = texLoader.load("normal.png");
-						material.displacementMap = texLoader.load("displacement.jpg");
-						material.displacementScale = 2.436143;
-						material.displacementBias = -0.428408;
-
-						child.material = material;
-					}
-				}
-			);
-
-			obj.scale.y = 0.3;
-			obj.scale.z = 0.3;
-			obj.scale.x = 0.3;
-
-			obj.position.y = -48;
-			obj.position.z = 2;
-			obj.position.x = -15;
-
-			//obj.rotation.x-=1.35;
-
-			scene.add(obj);
-			console.log("Carregou!");
-
-		},//Oque acontece quando terminar!
-		function(andamento){
-			console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
-		},//O que acontece enquanto esta carregando
-		function(error){
-			console.log(" Deu merda!: "+ error);
-		}//o que acontece se der merda.
-	); */
 
 
 	//carrega CERBERUS
@@ -296,7 +254,82 @@ var objLoading = function(){
 		}//o que acontece se der merda.
 	);
 
-	
+	//carregando Fenix
+	loaderFBX.load(
+		'assets/Phoenix.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['fenix'] = obj;
+
+			 obj.traverse( function (child){
+					if (child instanceof THREE.Mesh){
+						child.material = new THREE.MeshStandardMaterial({
+							map: new THREE.TextureLoader().load("assets/texturas/Phoenix_texture.png")}
+						);
+					}
+				}
+			); 
+
+			 obj.scale.y = 0.03;
+			 obj.scale.z = 0.03;
+			 obj.scale.x = 0.03;
+
+			obj.position.y = -4.3;
+			obj.position.x = 15;
+			obj.position.z = 0;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Fenix");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Fenix: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Fenix!: "+ error);
+		}//o que acontece se der merda.
+	);
+
+	// carrega Godzilla
+	loaderFBX.load(
+		'assets/Godzilla.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['god'] = obj;
+
+			obj.traverse( function (child){
+				if (child instanceof THREE.Mesh){
+					child.material = new THREE.MeshStandardMaterial({
+						map: new THREE.TextureLoader().load("assets/texturas/Godzilla_texture.png")}
+					);
+				}
+			}
+		); 
+
+
+			obj.scale.y = 0.08;
+			obj.scale.z = 0.08;
+			obj.scale.x = 0.08;
+
+			obj.position.y = -7.5;
+			obj.position.z = -30;
+			obj.position.x = -85;
+
+			//obj.rotation.x-=1.35;
+
+			scene.add(obj);
+			console.log("Carregou Godzilla!");
+
+		},//Oque acontece quando terminar!
+		function(andamento){
+			console.log("Carregou Godzilla: " + (andamento.loaded / andamento.total)*100 + " %" );
+		},//O que acontece enquanto esta carregando
+		function(error){
+			console.log(" Deu merda Godzilla!: "+ error);
+		}//o que acontece se der merda.
+	);
 
 
 	//carregando ouriço DEU PROBLEMA NA TEXTURA, NÃO PODE USAR
@@ -414,18 +447,18 @@ var createGui = function (){
 		}
 	);
 
-	let opcoes = ['Ovelha','Triceratopis', 'rhino'];
+	let opcoes = ['cientista','fenix', 'godzilla'];
 	let comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos");
 	comboChange.onChange(function(parametro){
-			if (parametro == 'Ovelha'){
-				camera.lookAt(elementos["ove"].position);
-				parametrosGUI.modelGui = "ove";
-			}else if (parametro == 'Triceratopis'){
-				camera.lookAt(elementos["tri"].position);
+			if (parametro == 'cientista'){
+				camera.lookAt(elementos["cien"].position);
+				parametrosGUI.modelGui = "cien";
+			}else if (parametro == 'fenix'){
+				camera.lookAt(elementos["fenix"].position);
 				parametrosGUI.modelGui = "tri";
-			}else if (parametro == 'rhino'){
-				camera.lookAt(elementos["rhino"].position);
-				parametrosGUI.modelGui = "rhino";
+			}else if (parametro == 'godzilla'){
+				camera.lookAt(elementos["god"].position);
+				parametrosGUI.modelGui = "god";
 			} 
 		}
 	);
