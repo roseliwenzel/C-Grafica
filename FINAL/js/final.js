@@ -1,3 +1,4 @@
+
 var scene; //mundo virtual
 var camera; //area de visualização
 var renderer; //responsavel por renderizar tudo
@@ -10,15 +11,12 @@ var animationFolder;
 
 var elementos = [];
 
-var velocidade = 0.07;
-
 var ground;
 var geometriaA;
 
 var lights =[];
 
-var wolfVelocity = 0;
-var ovelha;
+var wolfVelocity = 0.05;
 
 //variaveis para animação
 var mixer;
@@ -27,106 +25,80 @@ var animationActions = Array();
 var activeAction;
 var lastAction;
 var loadFinished;
-
-//bounding box
-var staticElements = [];
-var charBox = [];
-var helperChar;
-
 var clock = new THREE.Clock();
+var k = 0;
+
+//Var para add a camera com o lobo
+var char;
+
+var charBounding;
+var charHelper;
+var escala;
+var staticBounding = [];
+
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 var objLoading = function(){
+
 	loader = new THREE.OBJLoader();
 
 	//carregando Ovelha
 	let loaderFBX = new THREE.FBXLoader();
-	/* loaderFBX.load(
-		'assets/Sheep.fbx',//arquivo que vamos buscar
-		function(obj){
-			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['ove'] = obj;
-
-			obj.traverse( function (child){
-					if (child instanceof THREE.Mesh){
-						child.material = new THREE.MeshLambertMaterial({
-							map: new THREE.TextureLoader().load("assets/texturas/UVSheep.png")}
-						);
-						child.castShadow = true;
-						child.receiveShadow = true;
-					}
-				}
-			);
-
-			 obj.scale.y = 0.02;
-			 obj.scale.z = 0.02;
-			 obj.scale.x = 0.02;
-
-			obj.position.y = -7.6;
-			obj.position.x = -10;
-			obj.position.z = 0;
-
-			let vobH = new THREE.BoxHelper( obj, 0xffff00 );
-			scene.add(vobH);
-			
-			obj.children[0].geometry.computeBoundingBox();
-			boxF = new THREE.Box3().setFromObject(obj.children[0]);
-			
-			staticElements.push(boxF);
-			ovelha = obj;
-
-			scene.add(obj);
-			console.log("Carregou Ovelha");
-
-		},//Oque acontece quando terminar!
-		function(andamento){
-			console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
-		},//O que acontece enquanto esta carregando
-		function(error){
-			console.log(" Deu merda!: "+ error);
-		}//o que acontece se der merda.
-	); */
-	
-	// carrega lagarto
-	loaderFBX.load(
-		'assets/lizard/Lizard.fbx',//arquivo que vamos buscar
-		function(obj){
-			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['lizard'] = obj;
-
-			obj.traverse( function (child){
-				if (child instanceof THREE.Mesh){
-					child.material = new THREE.MeshStandardMaterial({
-						map: new THREE.TextureLoader().load("assets/lizard/Lizard_texture.png")}
+	for (i=0;i<10;i++){	
+		loaderFBX.load(
+			'assets/esqueleto/skeleton.fbx',//arquivo que vamos buscar
+			function(obj){
+				//atribui a cena, colore, reposiciona, rotaciona
+				elementos['ove'] = obj;
+				obj.traverse( function (child){
+						if (child instanceof THREE.Mesh){
+							/* child.material = new THREE.MeshLambertMaterial({
+								map: new THREE.TextureLoader().load("assets/texturas/UVSheep.png")}
+							);  */
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+						}
 					);
-				}
-			}
-		); 
+					
+					obj.position.y = -7.5;
 
-		obj.scale.y = 0.003;
-		obj.scale.z = 0.003;
-		obj.scale.x = 0.003;
+					obj.position.z = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
+					obj.position.x = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
 
-		obj.position.y = -7.5;
-		obj.position.z = 0;
-		obj.position.x = 10;
+					escala = getRandomArbitrary(0.05, 0.2);
+					obj.scale.y = escala;
+					obj.scale.z = escala;
+					obj.scale.x = escala;
 
-		//obj.rotation.x-=1.35;
+	
+					
+					
+				
+					
+					
+					ovelha = obj;
+					scene.add(obj);
+					console.log("Carregou Ovelha");
+				},//Oque acontece quando terminar!
+				function(andamento){
+					console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
+				},//O que acontece enquanto esta carregando
+				function(error){
+					console.log(" Deu merda!: "+ error);
+				}//o que acontece se der merda.
+			);
+	}
+		
+	
 
-		scene.add(obj);
-		console.log("Carregou Lagarto 1!");
+	
 
-		},//Oque acontece quando terminar!
-		function(andamento){
-			console.log("Carregou Lagarto 1: " + (andamento.loaded / andamento.total)*100 + " %" );
-		},//O que acontece enquanto esta carregando
-		function(error){
-			console.log(" Deu merda Lagarto 1!: "+ error);
-		}//o que acontece se der merda.
-	);
-
-	//Load do Wolf
+	
 	loaderFBX.load(
-		'assets/wolf/Wolf.fbx',//arquivo que vamos buscar
+		'assets/teste/Demon_Idle.fbx',//arquivo que vamos buscar
 		function(obj){
 			//atribui a cena, colore, reposiciona, rotaciona
 			elementos['wolf'] = obj;
@@ -134,78 +106,364 @@ var objLoading = function(){
 			let animation;
 
 			mixer = new THREE.AnimationMixer(obj);
+
+			console.log(obj);
+
 			animation = mixer.clipAction(obj.animations[0]);
 			animationActions.push(animation);
-
-			animation = mixer.clipAction(obj.animations[1]);
-			animationActions.push(animation);
-
-			animation = mixer.clipAction(obj.animations[2]);
-			animationActions.push(animation);
-
-			animation = mixer.clipAction(obj.animations[3]);
-			animationActions.push(animation);
-
-			animation = mixer.clipAction(obj.animations[4]);
-			animationActions.push(animation);
-
-			animation = mixer.clipAction(obj.animations[5]);
-			animationActions.push(animation);
-
 			activeAction = animation;
+			setAction(animation);
 
-			//adiciona as animações a GUI
+
+			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
+				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
+			loaderFBX.load(
+						'assets/teste/Demon_Idle.fbx', //arquivo que vamos carregar
+						function(object){
+							let animationAction = mixer.clipAction((object).animations[0]);
+							animationActions.push(animationAction)         
+							
+							
+							loaderFBX.load(
+								'assets/teste/Demon_Damage.fbx', //arquivo que vamos carregar
+								function(object){
+									let animationAction = mixer.clipAction((object).animations[0]);
+									animationActions.push(animationAction)         
+									activeAction = animationAction;
+									setAction(animationAction);
+									loaderFBX.load(
+										'assets/teste/Demon_Run.fbx', //arquivo que vamos carregar
+										function(object){
+											let animationAction = mixer.clipAction((object).animations[0]);
+											animationActions.push(animationAction)         
+											activeAction = animationAction;
+											setAction(animationAction);
+											loaderFBX.load(
+												'assets/teste/Demon_Jump.fbx', //arquivo que vamos carregar
+												function(object){
+													let animationAction = mixer.clipAction((object).animations[0]);
+													animationActions.push(animationAction)         
+													activeAction = animationAction;
+													setAction(animationAction);
+													loaderFBX.load(
+														'assets/teste/Demon_Attack.fbx', //arquivo que vamos carregar
+														function(object){
+															let animationAction = mixer.clipAction((object).animations[0]);
+															animationActions.push(animationAction)         
+															activeAction = animationAction;
+															setAction(animationAction);
+															loaderFBX.load(
+																'assets/teste/Demon_Dead.fbx', //arquivo que vamos carregar
+																function(object){
+																	let animationAction = mixer.clipAction((object).animations[0]);
+																	animationActions.push(animationAction)         
+																	activeAction = animationAction;
+																	setAction(animationAction);
+																});
+														});
+
+												});
+										});
+								});
+						});
+
+			
+			// //adiciona as animações a GUI
 			animationFolder.add(parametrosGUI, "idle");
-			animationFolder.add(parametrosGUI, "sit");
-			animationFolder.add(parametrosGUI, "run");
-			animationFolder.add(parametrosGUI, "walk");
-			animationFolder.add(parametrosGUI, "creep");
-			animationFolder.add(parametrosGUI, "seiNao");
-
+			animationFolder.add(parametrosGUI, "Damage");
+			animationFolder.add(parametrosGUI, "Run");
+			animationFolder.add(parametrosGUI, "Jump");
+			animationFolder.add(parametrosGUI, "Attack");
+			animationFolder.add(parametrosGUI, "Dead");
+			let cont = 0;
 			
 			obj.traverse( function (child){
 					
 					if (child instanceof THREE.Mesh){
 						//child.material = new THREE.MeshStandardMaterial();
-						child.material.map = new THREE.TextureLoader().load("assets/wolf/Wolf_Body.jpg");
+						child.material.map = new THREE.TextureLoader().load("assets/teste/UVDemon.png");
 						
 						child.material.shininess = 0;
 						child.castShadow = true;
 						child.receiveShadow = true;
-						console.log("Aqui lol");
+
 					}
 				}
 			);
 
-			 obj.scale.y = 0.1;
-			 obj.scale.z = 0.1;
-			 obj.scale.x = 0.1;
+				obj.scale.y = 0.02;
+				obj.scale.z = 0.02;
+				obj.scale.x = 0.02;
 
-			 //camera.add(obj);
-			 //camera.add(obj);
-			 obj.position.y = -7.5;
-			 obj.position.z = camera.position.z-20;
+			obj.position.y = -7.5;
 
-
-			 char.push(camera);
-			 char.push(obj);
+			char = new THREE.Group();
+			char.add(camera);
+			char.add(obj);
 			
-			obj.rotation.y-=Math.PI;
-			scene.add(obj);
-			
-			helperChar = new THREE.BoundingBoxHelper(obj, 0xff0000);
-			scene.add(helperChar);
+			obj.rotation.y-= Math.PI;
+			// charHelper =  new THREE.BoxHelper(obj, 0xff0000);
+			// scene.add(charHelper);
+
+			charObj = obj;
 
 			obj.children[0].geometry.computeBoundingBox();
-			boxF = new THREE.Box3().setFromObject(obj.children[0]);
-			charBox.push(boxF);
-			
-// If you want a visible bounding box
+			let objBox = new THREE.Box3().setFromObject(obj);
+			// scene.add(objBox);
+			charBounding = objBox;
 
+
+			scene.add(char);
 			console.log("Carregou Wolf");
 			loadFinished = true;
 
 		});
+
+
+		/* loaderFBX.load(
+			'assets/wolf/Wolf.fbx',//arquivo que vamos buscar
+			function(obj){
+				//atribui a cena, colore, reposiciona, rotaciona
+				elementos['wolf'] = obj;
+	
+				let animation;
+	
+				mixer = new THREE.AnimationMixer(obj);
+				animation = mixer.clipAction(obj.animations[0]);
+				animationActions.push(animation);
+	
+				animation = mixer.clipAction(obj.animations[1]);
+				animationActions.push(animation);
+	
+				animation = mixer.clipAction(obj.animations[2]);
+				animationActions.push(animation);
+	
+				animation = mixer.clipAction(obj.animations[3]);
+				animationActions.push(animation);
+	
+				animation = mixer.clipAction(obj.animations[4]);
+				animationActions.push(animation);
+	
+				animation = mixer.clipAction(obj.animations[5]);
+				animationActions.push(animation);
+	
+				activeAction = animation;
+	
+				//adiciona as animações a GUI
+				animationFolder.add(parametrosGUI, "idle");
+				animationFolder.add(parametrosGUI, "sit");
+				animationFolder.add(parametrosGUI, "run");
+				animationFolder.add(parametrosGUI, "walk");
+				animationFolder.add(parametrosGUI, "creep");
+				animationFolder.add(parametrosGUI, "seiNao");
+	
+				
+				obj.traverse( function (child){
+						
+						if (child instanceof THREE.Mesh){
+							//child.material = new THREE.MeshStandardMaterial();
+							child.material.map = new THREE.TextureLoader().load("assets/wolf/Wolf_Body.jpg");
+							
+							child.material.shininess = 0;
+							child.castShadow = true;
+							child.receiveShadow = true;
+							console.log("Aqui lol");
+						}
+					}
+				);
+	
+				 obj.scale.y = 0.1;
+				 obj.scale.z = 0.1;
+				 obj.scale.x = 0.1;
+	
+				obj.position.y = -7.5;
+	
+				char = new THREE.Group();
+				char.add(camera);
+				char.add(obj);
+				
+				obj.rotation.y-= Math.PI;
+				charHelper =  new THREE.BoxHelper(obj, 0xff0000);
+				scene.add(charHelper);
+	
+				charObj = obj;
+	
+				obj.children[0].geometry.computeBoundingBox();
+				let objBox = new THREE.Box3().setFromObject(obj.children[0]);
+				// scene.add(objBox);
+				charBounding = objBox;
+	
+	
+				scene.add(char);
+				console.log("Carregou Wolf");
+				loadFinished = true;
+	
+			}); */
+
+	/* loaderFBX.load(
+		'assets/lizard/Animations/Lizard_Idle.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['lagarto'] = obj;
+
+			let animation;
+
+			mixer = new THREE.AnimationMixer(obj);
+
+			console.log(obj);
+
+			animation = mixer.clipAction(obj.animations[0]);
+			animationActions.push(animation);
+			activeAction = animation;
+			setAction(animation);
+
+
+			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
+				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
+			loaderFBX.load(
+				'assets/lizard/Animations/Lizard_walking.fbx', //arquivo que vamos carregar
+						function(object){
+							let animationAction = mixer.clipAction((object).animations[0]);
+							animationActions.push(animationAction)  
+							activeAction = animationAction;
+							setAction(animationAction);    
+							loaderFBX.load(
+								'assets/lizard/Animations/Lizard_Idle.fbx', //arquivo que vamos carregar
+										function(object){
+											let animationAction = mixer.clipAction((object).animations[0]);
+											animationActions.push(animationAction)  
+											activeAction = animationAction;
+											setAction(animationAction);     
+										}); 
+						});
+
+		
+			animationFolder.add(parametrosGUI, "CaminharLagarto");
+
+			let cont = 0;
+			
+			obj.traverse( function (child){
+					
+					if (child instanceof THREE.Mesh){
+						//child.material = new THREE.MeshStandardMaterial();
+						child.material.map = new THREE.TextureLoader().load("assets/lizard/Animations/Lizard_texture.png");
+						
+						child.material.shininess = 0;
+						child.castShadow = true;
+						child.receiveShadow = true;
+						console.log("Aqui lol " + ++cont);
+					}
+				}
+			);
+			
+			
+
+			obj.scale.y = 0.02;
+			obj.scale.z = 0.02;
+			obj.scale.x = 0.02;
+
+			obj.position.y = -7.5;
+			obj.position.x = -2.5;
+			obj.rotation.y = 1.7;	
+
+			char = new THREE.Group();
+			char.add(camera);
+			char.add(obj);
+			
+			obj.rotation.y-= Math.PI;
+			// charHelper =  new THREE.BoxHelper(obj, 0xff0000);
+			// scene.add(charHelper);
+
+			charObj = obj;
+
+			//obj.children[0].geometry.computeBoundingBox();
+			let objBox = new THREE.Box3().setFromObject(obj);
+			// scene.add(objBox);
+			charBounding = objBox;
+
+
+			scene.add(char);
+			console.log("Carregou Wolf");
+			loadFinished = true;
+
+		}); */
+
+	/* loaderFBX.load(
+		'assets/teste/rp_nathan_animated_003_walking.fbx',//arquivo que vamos buscar
+		function(obj){
+			//atribui a cena, colore, reposiciona, rotaciona
+			elementos['homem'] = obj;
+
+			let animation;
+
+			mixer = new THREE.AnimationMixer(obj);
+
+			console.log(obj);
+
+			animation = mixer.clipAction(obj.animations[0]);
+			animationActions.push(animation);
+			activeAction = animation;
+			setAction(animation);
+
+
+			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
+				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
+			loaderFBX.load(
+						'assets/teste/rp_nathan_animated_003_walking_ue4.fbx', //arquivo que vamos carregar
+						function(object){
+							let animationAction = mixer.clipAction((object).animations[0]);
+							animationActions.push(animationAction)  
+							activeAction = animationAction;
+							setAction(animationAction);     
+						});
+
+		
+			animationFolder.add(parametrosGUI, "CaminharHomem");
+
+			let cont = 0;
+			
+			obj.traverse( function (child){
+					
+					if (child instanceof THREE.Mesh){
+						//child.material = new THREE.MeshStandardMaterial();
+						child.material.map = new THREE.TextureLoader().load("assets/teste/rp_nathan_animated_003_dif.jpg");
+						
+						child.material.shininess = 0;
+						child.castShadow = true;
+						child.receiveShadow = true;
+						console.log("Aqui lol " + ++cont);
+					}
+				}
+			);
+
+				obj.scale.y = 0.11;
+				obj.scale.z = 0.11;
+				obj.scale.x = 0.11;
+
+			obj.position.y = -7.5;
+			obj.position.x = -2.5;
+
+			char = new THREE.Group();
+			char.add(camera);
+			char.add(obj);
+			
+			obj.rotation.y-= Math.PI;
+			// charHelper =  new THREE.BoxHelper(obj, 0xff0000);
+			// scene.add(charHelper);
+
+			charObj = obj;
+
+			//obj.children[0].geometry.computeBoundingBox();
+			let objBox = new THREE.Box3().setFromObject(obj);
+			// scene.add(objBox);
+			charBounding = objBox;
+
+
+			scene.add(char);
+			console.log("Carregou Wolf");
+			loadFinished = true;
+
+		}); */
 
 
 	for (i=0;i<10;i++)
@@ -236,16 +494,10 @@ var objLoading = function(){
 			//object.rotation.y += 1;
 
 			object.castShadow = true;
-
-			
-			let vobH = new THREE.BoxHelper( object, 0xffff00 );
-			vobH.scale-=10;
-			scene.add(vobH);
-			
+			//scene.add(new THREE.BoxHelper(object, 0xffff00));
 			object.children[0].geometry.computeBoundingBox();
-			boxF = new THREE.Box3().setFromObject(object.children[0]);
-			boxF.scale-=10;
-			staticElements.push(boxF);
+			let objBox = new THREE.Box3().setFromObject(object);
+			staticBounding.push(objBox);
 
 			scene.add(object);    
 		},//metodo, tudo deu certo
@@ -265,9 +517,18 @@ const setAction = function(toAction) {
     if (toAction != activeAction) {
         lastAction = activeAction;
         activeAction = toAction;
+		if (toAction == animationActions[5]){ //se é a morte toca uma vez só
+			activeAction.clampWhenFinished = true;
+			activeAction.loop = THREE.LoopOnce;
+		}else{
+			activeAction.clampWhenFinished = false;
+			activeAction.loop = THREE.LoopRepeat ;
+		}
         lastAction.stop();
         activeAction.reset();
         activeAction.play();
+
+
     }
 }
 
@@ -353,28 +614,33 @@ var createGui = function (){
 		skyColor : "#000000",
 		groundColor: "#006400",
 
+
+
 		geometrias: "",
 		modelGui: "",
-		walk: function () {
-            setAction(animationActions[1]);
+		idle: function () {
+            setAction(animationActions[0]);
+			
 			wolfVelocity = 0.05;
         },
-        run: function () {
-            setAction(animationActions[0]);
-			wolfVelocity = 0.2;
+		Damage: function () {
+            setAction(animationActions[2])
         },
-        sit: function () {
+		Run: function () {
             setAction(animationActions[3])
         },
-        creep: function () {
-            setAction(animationActions[5])
-        },
-        idle: function () {
+		Jump: function () {
             setAction(animationActions[4])
         },
-        seiNao: function () {
-            setAction(animationActions[2])
-        }
+        Attack: function () {
+            setAction(animationActions[5]);
+			wolfVelocity = 0.2;
+        },
+        Dead: function () {
+            setAction(animationActions[6])
+			
+        },
+        
 	};
 
 	let fazScala = gui.add(parametrosGUI, 'scalarPuppet').min(0.1).max(2).step(0.1).name("Scale");
@@ -494,13 +760,13 @@ var init = function (){
 	
 	//criar um piso.
 	let textureLoad = new THREE.TextureLoader();
-	let groundTexture = textureLoad.load("assets/texturas/terrain/grasslight-big.jpg"); //busca a imagem
+	let groundTexture = textureLoad.load("assets/texturas/terrain/lava.jpg"); //busca a imagem
 	groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; //quero que ela se repita
 	groundTexture.encoding = THREE.sRGBEncoding; //padrão cores, sempre que existir será informado
 	groundTexture.repeat.set(25,25); //número de vezes que ela vai se repetir dentro do nosso chão
 	
 	let materialGround = new THREE.MeshLambertMaterial({map: groundTexture});
-	materialGround.normalMap = textureLoad.load("assets/texturas/terrain/grasslight-big-nm.jpg"); //busca a normal, que da noção básica de profundidade
+	materialGround.normalMap = textureLoad.load("assets/texturas/terrain/lava.jpg"); //busca a normal, que da noção básica de profundidade
 	
 	
 	ground = new THREE.Mesh(
@@ -530,6 +796,7 @@ var init = function (){
 var key_r = false;
 var key_space = false;
 var key_q = false;
+var keys = [];
 
 var soltouBotao = function(e){
 
@@ -540,7 +807,19 @@ var soltouBotao = function(e){
 		key_space = false;
 	}
 	if (e.keyCode == 81){ //espaço
-		key_q = false;
+		setAction(animationActions[4]);
+		wolfVelocity= 0.05;
+	}
+	if (e.keyCode == 38){ //douwn
+		keys['down'] = false;
+		setAction(animationActions[0]);
+
+		//elementos["puppet"]["tronco"].position.z += 1;
+	}
+	if (e.keyCode == 40){ // UP
+		keys['up'] = false;
+		setAction(animationActions[0]);
+		
 	}
 }
 
@@ -548,32 +827,35 @@ var soltouBotao = function(e){
 var apertouButao =  function(e){
 	console.log(e.keyCode);
 
+	if (e.keyCode == 82){ //r
+		elementos['cerberus'].rotation.x+=0.1;
+		key_r = true;
+	}
+	if (e.keyCode == 32){ // space
+		setAction(animationActions[0]);
+		wolfVelocity= 0.2;
+	}
+
 	if (e.keyCode == 81){ // q
 		key_q = true;		
 	}
 
 	if (e.keyCode == 38){ //douwn
-		console.log(char[1].children[0]);
-		char.forEach(function (item){
-			item.position.z-=0.05;
-		});
+		keys['down'] = true;
+		setAction(animationActions[3]);
+		//elementos["puppet"]["tronco"].position.z += 1;
 	}
 	if (e.keyCode == 40){ // UP
-		console.log(char[1].children[1]);
-		char.forEach(function (item){
-			item.position.z+=0.05;
-		});
+		setAction(animationActions[3]);
+		keys['up'] = true;
+
 	}
 	if (e.keyCode == 37){ //left
-		console.log(char[1]);
-		char.forEach(function (item){
-			item.position.x-=0.1;
-		});
+		char.rotation.y+=0.1;
 	}
-	if (e.keyCode == 39){ //right
-		char.forEach(function (item){
-			item.position.x+=0.1;
-		});
+	if (e.keyCode == 39){ // right
+		char.rotation.y-=0.1;
+		
 	}
 }
 
@@ -585,7 +867,7 @@ var velocidadePulo = 0.5;
 var altura = -1;
 var bateu = false;
 
-var animation = function (){
+var animation = function (k=0){
 	requestAnimationFrame(animation); 
 
 	let delta = clock.getDelta();
@@ -593,45 +875,22 @@ var animation = function (){
 	if (loadFinished){
 		mixer.update(delta);
 
-		char.forEach(function (item){
-			item.position.z-=wolfVelocity;
-		});
+		if (keys['up'] == true){
+			char.position.z+=wolfVelocity;
+		}else if(keys['down'] == true){
+			char.position.z-=wolfVelocity;
+		}
+		//charHelper.update();
+		//charBounding.setFromObject(elementos['lagarto'].children[0]);
 
-		staticElements.forEach(function (item){
-			if (item.intersectsBox(charBox[0])){
-				
-				//detecção mias fina do elemento.
-				console.log("Funfa");
-				setAction(animationActions[3]);
-				
-				let cube = char[1].children[0];
-				var originPoint = cube.position.clone();
-				let cubes = [];
-				cubes.push(ovelha);
-
-				console.log(cube)
-
-
-				// for (var vertexIndex = 0; vertexIndex < cube[0].geometry.vertices.length; vertexIndex++) {
-				// 	var localVertex = cube.geometry.vertices[vertexIndex].clone();
-				// 	var globalVertex = localVertex.applyMatrix4(cube.matrix);
-				// 	var directionVector = globalVertex.sub(cube.position);
-
-				// 	var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-				// 	var collisionResults = ray.intersectObjects(cubes);
-				// 	if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-				// 		console.log(collisionResults[0].object.name);
-				// 		console.log("CHupa");
-				// 		collisionResults[0].object.material.transparent = true;
-				// 		collisionResults[0].object.material.opacity = 0.4;
-				// 	}
-				// }
+		/* //teste de colisao
+		staticBounding.forEach(function(item){
+			if (item.intersectsBox(charBounding)){
+				setAction(animationActions[5]);				
 			}
-		});
+		}); */
 
-		charBox[0].setFromObject(char[1].children[0]);
-		helperChar.update();
-		
+
 	}
 	
 
