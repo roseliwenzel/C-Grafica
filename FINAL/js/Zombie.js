@@ -85,24 +85,25 @@ function createZombie(){
 				}
 			);
 
-		  obj.scale.y = 0.001;
-		  obj.scale.z = 0.001;
-		  obj.scale.x = 0.001;
+		  obj.scale.y = 0.002;
+		  obj.scale.z = 0.002;
+		  obj.scale.x = 0.002;
 
+			obj.position.x = -3.5;
 			obj.position.y = -7.5;
+			obj.position.z = -3.5;
 
-			char = new THREE.Group();
-			char.add(camera);
-			char.add(obj);
+			charZ = new THREE.Group();
+			charZ.add(camera);
+			charZ.add(obj);
 			
-			obj.rotation.y-= Math.PI;
-			charObj = obj;
+			obj.rotation.y -= Math.PI;
 
 			obj.children[0].geometry.computeBoundingBox();
 			let objBox = new THREE.Box3().setFromObject(obj);
-			charBounding = objBox;
+			charBoundingZ = objBox;
 
-			scene.add(char);
+			scene.add(charZ);
 			console.log("Carregou Zumbi");
 			loadFinishedZ = true;
 		});  

@@ -97,18 +97,17 @@ function createDemon(){
 
 			obj.position.y = -7.5;
 
-			char = new THREE.Group();
-			char.add(camera);
-			char.add(obj);
+			charD = new THREE.Group();
+			charD.add(camera);
+			charD.add(obj);
 			
 			obj.rotation.y-= Math.PI;
-			charObj = obj;
 
 			obj.children[0].geometry.computeBoundingBox();
 			let objBox = new THREE.Box3().setFromObject(obj);
-			charBounding = objBox;
+			charBoundingD = objBox;
       
-			scene.add(char);
+			scene.add(charD);
 			console.log("Carregou Demon");
 			loadFinishedD = true;
 		});
