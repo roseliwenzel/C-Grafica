@@ -101,11 +101,11 @@ parametrosGUI = {
           setAction(animationActionsDemon[4])
   },
   AttackD: function () {
-          setAction(animationActionsDemon[5]);
+          setAction(animationActionsDemon[6]);
           demonVelocity = 0.2;
   },
   DeadD: function () {
-          setAction(animationActionsDemon[6]);
+          setAction(animationActionsDemon[7]);
   },
 
   idleZ: function () {
