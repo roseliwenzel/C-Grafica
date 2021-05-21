@@ -1,360 +1,10 @@
-
-var scene; //mundo virtual
-var camera; //area de visualização
-var renderer; //responsavel por renderizar tudo
-var controls; //controle do mouser
-
-var char=[];
-
-var parametrosGUI = {};
-var animationFolder;
-
-var elementos = [];
-
-var ground;
-var geometriaA;
-
-var lights =[];
-
-var wolfVelocity = 0.05;
-
-//variaveis para animação
-var mixer;
-var modelReady = false;
-var animationActions = Array();
-var activeAction;
-var lastAction;
-var loadFinished;
-var clock = new THREE.Clock();
-var k = 0;
-
-//Var para add a camera com o lobo
-var char;
-
-var charBounding;
-var charHelper;
-var escala;
-var staticBounding = [];
-
-function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
 var objLoading = function(){
-
-	loader = new THREE.OBJLoader();
-
-	//carregando Ovelha
-	let loaderFBX = new THREE.FBXLoader();
-	for (i=0;i<10;i++){	
-		loaderFBX.load(
-			'assets/esqueleto/skeleton.fbx',//arquivo que vamos buscar
-			function(obj){
-				//atribui a cena, colore, reposiciona, rotaciona
-				elementos['ove'] = obj;
-				obj.traverse( function (child){
-						if (child instanceof THREE.Mesh){
-							/* child.material = new THREE.MeshLambertMaterial({
-								map: new THREE.TextureLoader().load("assets/texturas/UVSheep.png")}
-							);  */
-							child.castShadow = true;
-							child.receiveShadow = true;
-						}
-						}
-					);
-					
-					obj.position.y = -7.5;
-
-					obj.position.z = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
-					obj.position.x = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
-
-					escala = getRandomArbitrary(0.05, 0.2);
-					obj.scale.y = escala;
-					obj.scale.z = escala;
-					obj.scale.x = escala;
-
-					ovelha = obj;
-					scene.add(obj);
-					console.log("Carregou Ovelha");
-				},//Oque acontece quando terminar!
-				function(andamento){
-					console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
-				},//O que acontece enquanto esta carregando
-				function(error){
-					console.log(" Deu merda!: "+ error);
-				}//o que acontece se der merda.
-			);
-	}
-
-	loaderFBX.load(
-		'assets/pedras/Volcano.fbx',//arquivo que vamos buscar
-		function(obj){
-			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['ove'] = obj;
-			obj.traverse( function (child){
-					if (child instanceof THREE.Mesh){
-						 child.material = new THREE.MeshLambertMaterial({
-							map: new THREE.TextureLoader().load("assets/pedras/Volcano_texture.png")}
-						);  
-						child.castShadow = true;
-						child.receiveShadow = true;
-					}
-					}
-				);
-				
-				obj.position.y = -7.5;
-
-				obj.position.z = -500
-
-
-				escala = 0.4;
-				obj.scale.y = escala;
-				obj.scale.z = escala;
-				obj.scale.x = escala;
-
-				ovelha = obj;
-				scene.add(obj);
-				console.log("Carregou Ovelha");
-			},//Oque acontece quando terminar!
-			function(andamento){
-				console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
-			},//O que acontece enquanto esta carregando
-			function(error){
-				console.log(" Deu merda!: "+ error);
-			}//o que acontece se der merda.
-		);
-
-		loaderFBX.load(
-			'assets/pedras/Volcano.fbx',//arquivo que vamos buscar
-			function(obj){
-				//atribui a cena, colore, reposiciona, rotaciona
-				elementos['ove'] = obj;
-				obj.traverse( function (child){
-						if (child instanceof THREE.Mesh){
-							 child.material = new THREE.MeshLambertMaterial({
-								map: new THREE.TextureLoader().load("assets/pedras/Volcano_texture.png")}
-							);  
-							child.castShadow = true;
-							child.receiveShadow = true;
-						}
-						}
-					);
-					
-					obj.position.y = -7.5;
-	
-					obj.position.x = -50;
-					obj.position.z = 500;
-	
-	
-					escala = 0.4;
-					obj.scale.y = escala;
-					obj.scale.z = escala;
-					obj.scale.x = escala;
-	
-					ovelha = obj;
-					scene.add(obj);
-					console.log("Carregou Ovelha");
-				},//Oque acontece quando terminar!
-				function(andamento){
-					console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
-				},//O que acontece enquanto esta carregando
-				function(error){
-					console.log(" Deu merda!: "+ error);
-				}//o que acontece se der merda.
-			);
-		
-	
-
-	
-
-	
-	loaderFBX.load(
-		'assets/teste/Demon_Idle.fbx',//arquivo que vamos buscar
-		function(obj){
-			//atribui a cena, colore, reposiciona, rotaciona
-			elementos['wolf'] = obj;
-
-			let animation;
-
-			mixer = new THREE.AnimationMixer(obj);
-
-			console.log(obj);
-
-			animation = mixer.clipAction(obj.animations[0]);
-			animationActions.push(animation);
-			activeAction = animation;
-			setAction(animation);
-
-
-			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
-				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
-			loaderFBX.load(
-						'assets/teste/Demon_Idle.fbx', //arquivo que vamos carregar
-						function(object){
-							let animationAction = mixer.clipAction((object).animations[0]);
-							animationActions.push(animationAction)         
-							
-							
-							loaderFBX.load(
-								'assets/teste/Demon_Damage.fbx', //arquivo que vamos carregar
-								function(object){
-									let animationAction = mixer.clipAction((object).animations[0]);
-									animationActions.push(animationAction)         
-									activeAction = animationAction;
-									setAction(animationAction);
-									loaderFBX.load(
-										'assets/teste/Demon_Run.fbx', //arquivo que vamos carregar
-										function(object){
-											let animationAction = mixer.clipAction((object).animations[0]);
-											animationActions.push(animationAction)         
-											activeAction = animationAction;
-											setAction(animationAction);
-											loaderFBX.load(
-												'assets/teste/Demon_Jump.fbx', //arquivo que vamos carregar
-												function(object){
-													let animationAction = mixer.clipAction((object).animations[0]);
-													animationActions.push(animationAction)         
-													activeAction = animationAction;
-													setAction(animationAction);
-													loaderFBX.load(
-														'assets/teste/Demon_Attack.fbx', //arquivo que vamos carregar
-														function(object){
-															let animationAction = mixer.clipAction((object).animations[0]);
-															animationActions.push(animationAction)         
-															activeAction = animationAction;
-															setAction(animationAction);
-															loaderFBX.load(
-																'assets/teste/Demon_Dead.fbx', //arquivo que vamos carregar
-																function(object){
-																	let animationAction = mixer.clipAction((object).animations[0]);
-																	animationActions.push(animationAction)         
-																	activeAction = animationAction;
-																	setAction(animationAction);
-																});
-														});
-
-												});
-										});
-								});
-						});
-
-			
-			// //adiciona as animações a GUI
-			animationFolder.add(parametrosGUI, "idle");
-			animationFolder.add(parametrosGUI, "Damage");
-			animationFolder.add(parametrosGUI, "Run");
-			animationFolder.add(parametrosGUI, "Jump");
-			animationFolder.add(parametrosGUI, "Attack");
-			animationFolder.add(parametrosGUI, "Dead");
-			let cont = 0;
-			
-			obj.traverse( function (child){
-					
-					if (child instanceof THREE.Mesh){
-						//child.material = new THREE.MeshStandardMaterial();
-						child.material.map = new THREE.TextureLoader().load("assets/teste/UVDemon.png");
-						
-						child.material.shininess = 0;
-						child.castShadow = true;
-						child.receiveShadow = true;
-
-					}
-				}
-			);
-
-				obj.scale.y = 0.02;
-				obj.scale.z = 0.02;
-				obj.scale.x = 0.02;
-
-			obj.position.y = -7.5;
-
-			char = new THREE.Group();
-			char.add(camera);
-			char.add(obj);
-			
-			obj.rotation.y-= Math.PI;
-			// charHelper =  new THREE.BoxHelper(obj, 0xff0000);
-			// scene.add(charHelper);
-
-			charObj = obj;
-
-			obj.children[0].geometry.computeBoundingBox();
-			let objBox = new THREE.Box3().setFromObject(obj);
-			// scene.add(objBox);
-			charBounding = objBox;
-
-
-			scene.add(char);
-			console.log("Carregou Wolf");
-			loadFinished = true;
-
-		});
-
-	for (i=0;i<10;i++)
-		loader.load(
-		'assets/tree.obj', //arquivo que vamos carregar
-		function(object){
-			
-			object.traverse( function ( child ) {
-						if ( child instanceof THREE.Mesh ) {
-							child.material = new THREE.MeshLambertMaterial();
-							child.material.map = new THREE.TextureLoader().load("assets/texturas/Wood.jpg");
-							child.material.shininess = 0;
-							child.castShadow = true;
-							child.receiveShadow = true;
-						}
-					});
-
-			object.scale.x =50;
-			object.scale.y = 50;
-			object.scale.z = 50;
-
-			object.position.z = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
-			object.position.x = Math.random()*200*(Math.random() > 0.5 ? -1: 1);
-			
-			object.position.y = -7;
-
-
-			//object.rotation.y += 1;
-
-			object.castShadow = true;
-			//scene.add(new THREE.BoxHelper(object, 0xffff00));
-			object.children[0].geometry.computeBoundingBox();
-			let objBox = new THREE.Box3().setFromObject(object);
-			staticBounding.push(objBox);
-
-			scene.add(object);    
-		},//metodo, tudo deu certo
-		function( andamento) {
-			console.log((andamento.loaded / andamento.total *100) + "% pronto!");
-		},//metodo executa enquanto carrega
-		function (error){
-			console.log("Deu caca: " + error);
-		} //metodo deu merda
-	);
-
-
-
+  createSkeleton();
+  createVolcano();
+	createDemon();
+  createTreeScene();
+	createZombie();
 };
-//troca a ação do nosso modelo
-const setAction = function(toAction) {
-    if (toAction != activeAction) {
-        lastAction = activeAction;
-        activeAction = toAction;
-		if (toAction == animationActions[5]){ //se é a morte toca uma vez só
-			activeAction.clampWhenFinished = true;
-			activeAction.loop = THREE.LoopOnce;
-		}else{
-			activeAction.clampWhenFinished = false;
-			activeAction.loop = THREE.LoopRepeat ;
-		}
-        lastAction.stop();
-        activeAction.reset();
-        activeAction.play();
-
-
-    }
-}
 
 var ambientLightOn = function (){
 	lights['ambient'] = new THREE.AmbientLight(0xffffff,0.5);
@@ -427,46 +77,6 @@ var godSaysLightsOn = function (){
 var createGui = function (){
 	const gui = new dat.GUI();
 
-	parametrosGUI = {
-		scalarPuppet: 1,
-		positionX: 0,
-		positionY: -6,
-		positionZ: 0,
-		ambientLight: 1,
-		sunLight: 1,
-
-		skyColor : "#000000",
-		groundColor: "#006400",
-
-
-
-		geometrias: "",
-		modelGui: "",
-		idle: function () {
-            setAction(animationActions[0]);
-			
-			wolfVelocity = 0.05;
-        },
-		Damage: function () {
-            setAction(animationActions[2])
-        },
-		Run: function () {
-            setAction(animationActions[3])
-        },
-		Jump: function () {
-            setAction(animationActions[4])
-        },
-        Attack: function () {
-            setAction(animationActions[5]);
-			wolfVelocity = 0.2;
-        },
-        Dead: function () {
-            setAction(animationActions[6])
-			
-        },
-        
-	};
-
 	let fazScala = gui.add(parametrosGUI, 'scalarPuppet').min(0.1).max(2).step(0.1).name("Scale");
 	fazScala.onChange(function (parametro){
 			elementos[parametrosGUI.modelGui].scale.x = parametro;
@@ -487,19 +97,19 @@ var createGui = function (){
 		}
 	);
 
-
-	let opcoes = ['Ovelha','Triceratopis'];
-	let comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos");
+	let opcoes = ['Demon', 'Zombie'];
+	let comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos").setValue("Demon");
 	comboChange.onChange(function(parametro){
-			if (parametro == 'Ovelha'){
-				camera.lookAt(elementos["ove"].position);
-				parametrosGUI.modelGui = "ove";
-			}else if (parametro == 'Triceratopis'){
-				camera.lookAt(elementos["tri"].position);
-				parametrosGUI.modelGui = "tri";
-			} 
+			if (parametro == 'Demon'){
+				camera.lookAt(elementos["dem"].position);
+				parametrosGUI.modelGui = "dem";
+			} else if (parametro == 'Zombie') {
+				camera.lookAt(elementos['zbm'].position);
+				parametrosGUI.modelGui = "zbm";
+			}
 		}
 	);
+
 	let folderPosition = gui.addFolder("Position");
 
 	let positionX = folderPosition.add(parametrosGUI, 'positionX').min(0).max(600).step(15).name("Position X");
@@ -521,7 +131,7 @@ var createGui = function (){
 	let colorFolder = gui.addFolder('Coloros');
 	let sColor = colorFolder.addColor(parametrosGUI, 'skyColor').name("Dollie's Color");
 	sColor.onChange(function (parametro){
-			elementos["ove"].traverse( function (child){
+			elementos["skl"].traverse( function (child){
 				if (child.isMesh){
 					child.material.color = new THREE.Color(parametro);
 				}
@@ -535,14 +145,10 @@ var createGui = function (){
 		}
 	);
 
-	animationFolder = gui.addFolder('Animations');
+	animationFolderDemon  = gui.addFolder('Animations Demon');
+	animationFolderZombie = gui.addFolder('Animations Zombie');
 
-
-	//gui.add(parametrosGUI, 'b').name("Variavel2");
-
-	//scene.add(gui);
 	gui.open();
-
 }
 
 var init = function (){
@@ -557,9 +163,6 @@ var init = function (){
 						1, //near
 						500 //far
 					);
-
-	
-
 	
 	renderer = new THREE.WebGLRenderer({antialias: true});
 	renderer.shadowMap.enabled = true;
@@ -571,8 +174,6 @@ var init = function (){
 	camera.position.y = 1.7;
 	
 	createGui();
-
-	//criaMonstro();	
 
 	objLoading();
 
@@ -600,24 +201,15 @@ var init = function (){
 	scene.add(ground);
 	godSaysLightsOn();
 
-	//camera.add(lights["spot"]);
-
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
+	controls.zoomSpeed = 0.5;
 
 	scene.fog = new THREE.Fog(0xcce0ff, 100, 500);
-
 
 	document.addEventListener('keydown', apertouButao);
 	document.addEventListener('keyup', soltouBotao);
 
 };
-
-
-
-var key_r = false;
-var key_space = false;
-var key_q = false;
-var keys = [];
 
 var soltouBotao = function(e){
 
@@ -628,23 +220,20 @@ var soltouBotao = function(e){
 		key_space = false;
 	}
 	if (e.keyCode == 81){ //espaço
-		setAction(animationActions[4]);
-		wolfVelocity= 0.05;
+		setAction(animationActionsDemon[4]);
+		demonVelocity = 0.05;
 	}
 	if (e.keyCode == 38){ //douwn
 		keys['down'] = false;
-		setAction(animationActions[0]);
-		wolfVelocity= 0.2;
-		//elementos["puppet"]["tronco"].position.z += 1;
+		setAction(animationActionsDemon[0]);
+		demonVelocity = 0.2;
 	}
 	if (e.keyCode == 40){ // UP
 		keys['up'] = false;
-		setAction(animationActions[0]);
-		wolfVelocity= 0.2;
-		
+		setAction(animationActionsDemon[0]);
+		demonVelocity = 0.2;		
 	}
 }
-
 
 var apertouButao =  function(e){
 	console.log(e.keyCode);
@@ -654,8 +243,8 @@ var apertouButao =  function(e){
 		key_r = true;
 	}
 	if (e.keyCode == 32){ // space
-		setAction(animationActions[0]);
-		wolfVelocity= 0.2;
+		setAction(animationActionsDemon[0]);
+		demonVelocity = 0.2;
 	}
 
 	if (e.keyCode == 81){ // q
@@ -664,14 +253,13 @@ var apertouButao =  function(e){
 
 	if (e.keyCode == 38){ //douwn
 		keys['down'] = true;
-		setAction(animationActions[3]);
-		wolfVelocity= 0.4;
-		//elementos["puppet"]["tronco"].position.z += 1;
+		setAction(animationActionsDemon[3]);
+		demonVelocity = 0.4;
 	}
 	if (e.keyCode == 40){ // UP
-		setAction(animationActions[3]);
+		setAction(animationActionsDemon[3]);
 		keys['up'] = true;
-		wolfVelocity= 0.4;
+		demonVelocity = 0.4;
 
 	}
 	if (e.keyCode == 37){ //left
@@ -696,34 +284,17 @@ var animation = function (k=0){
 
 	let delta = clock.getDelta();
 
-	if (loadFinished){
+	if (loadFinishedD && loadFinishedZ){
 		mixer.update(delta);
 
 		if (keys['up'] == true){
-			char.position.z+=wolfVelocity;
+			char.position.z += demonVelocity;
 		}else if(keys['down'] == true){
-			char.position.z-=wolfVelocity;
+			char.position.z -= demonVelocity;
 		}
-		//charHelper.update();
-		//charBounding.setFromObject(elementos['lagarto'].children[0]);
-
-		/* //teste de colisao
-		staticBounding.forEach(function(item){
-			if (item.intersectsBox(charBounding)){
-				setAction(animationActions[5]);				
-			}
-		}); */
-
-
 	}
-	
-
 
 	renderer.render(scene, camera); //tira uma foto do estado e mostra na tela
-}
-
-function paraRadianos(angulo){
-	return angulo * (Math.PI/180);
 }
 
 window.onload = this.init
