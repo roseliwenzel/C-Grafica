@@ -29,6 +29,7 @@ var loadFinishedZ = false;
 var loadFinishedD = false;
 var clock = new THREE.Clock();
 var k = 0;
+var comboChange;
 
 //Var para add a camera com o lobo
 var char;
@@ -56,7 +57,8 @@ const setAction = function(toAction) {
   if (toAction != activeAction) {
     lastAction = activeAction;
     activeAction = toAction;
-    if (toAction == animationActionsDemon[5]){ //se é a morte toca uma vez só
+    if (toAction == animationActionsDemon[5] ||
+        toAction == animationActionsZombie[5]){ //se é a morte toca uma vez só
       activeAction.clampWhenFinished = true;
       activeAction.loop = THREE.LoopOnce;
     }else{
@@ -99,21 +101,29 @@ parametrosGUI = {
           demonVelocity = 0.2;
   },
   DeadD: function () {
-          setAction(animationActionsDemon[6])			
+          setAction(animationActionsDemon[6]);
   },
+
   idleZ: function () {
           setAction(animationActionsZombie[0]);
   },
   DamageZ: function () {
-          setAction(animationActionsZombie[1]);
-  },
-	walkZ: function () {
           setAction(animationActionsZombie[2]);
   },
-	JumpZ: function () {
+  walkZ: function () {
           setAction(animationActionsZombie[3]);
   },
-	DeadZ: function () {
+  JumpZ: function () {
           setAction(animationActionsZombie[4]);
   },
+  DeadZ: function () {
+          setAction(animationActionsZombie[5]);
+  },
 };
+
+var velocidadeOmbroDireitoC = -0.01;
+var velocidadeOmbroDireitoL = -0.01;
+var pulando = false;
+var velocidadePulo = 0.5;
+var altura = -1;
+var bateu = false;

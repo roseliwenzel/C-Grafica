@@ -20,11 +20,11 @@ var directionalLightOn = function () {
 	let light = new THREE.DirectionalLight(0xffffff,1);
 	light.castShadow = true;
 	light.shadow.mapSize.width = 4096;
-    light.shadow.mapSize.height = 4096;
-    light.shadow.camera.left = 1000;
-    light.shadow.camera.bottom = 1000;
-    light.shadow.camera.right = -1000
-    light.shadow.camera.top = -1000;
+  light.shadow.mapSize.height = 4096;
+  light.shadow.camera.left = 1000;
+  light.shadow.camera.bottom = 1000;
+  light.shadow.camera.right = -1000
+  light.shadow.camera.top = -1000;
 
 	light.position.y = 200;
 	light.position.x = 100;
@@ -98,7 +98,7 @@ var createGui = function (){
 	);
 
 	let opcoes = ['Demon', 'Zombie'];
-	let comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos").setValue("Demon");
+	comboChange = gui.add(parametrosGUI, 'geometrias').options(opcoes).name("Objetos").setValue("Demon");
 	comboChange.onChange(function(parametro){
 			if (parametro == 'Demon'){
 				camera.lookAt(elementos["dem"].position);
@@ -139,6 +139,7 @@ var createGui = function (){
 		);  
 		}
 	);
+
 	let gColor = colorFolder.addColor(parametrosGUI, 'groundColor').name("Ground");
 	gColor.onChange(function (parametro){
 			ground.material.color.setHex(parametro.replace("#", "0x"));
@@ -239,12 +240,13 @@ var apertouButao =  function(e){
 	console.log(e.keyCode);
 
 	if (e.keyCode == 82){ //r
-		elementos['cerberus'].rotation.x+=0.1;
 		key_r = true;
 	}
 	if (e.keyCode == 32){ // space
-		setAction(animationActionsDemon[0]);
-		demonVelocity = 0.2;
+		if (comboChange.getValue() == 'Demon') {
+			setAction(animationActionsDemon[0]);
+			demonVelocity = 0.2;
+		}
 	}
 
 	if (e.keyCode == 81){ // q
@@ -253,31 +255,31 @@ var apertouButao =  function(e){
 
 	if (e.keyCode == 38){ //douwn
 		keys['down'] = true;
-		setAction(animationActionsDemon[3]);
-		demonVelocity = 0.4;
+		if (comboChange.getValue() == 'Demon') {
+		  setAction(animationActionsDemon[3]);
+		  demonVelocity = 0.4;
+		}
 	}
 	if (e.keyCode == 40){ // UP
-		setAction(animationActionsDemon[3]);
+		if (comboChange.getValue() == 'Demon') {
+		  setAction(animationActionsDemon[3]);
+		  demonVelocity = 0.4;
+		}
 		keys['up'] = true;
-		demonVelocity = 0.4;
-
 	}
 	if (e.keyCode == 37){ //left
-		char.rotation.y+=0.1;
+		if (comboChange.getValue() == 'Demon') {
+		  char.rotation.y += 0.1;
+		}
 	}
 	if (e.keyCode == 39){ // right
-		char.rotation.y-=0.1;
-		
+		if (comboChange.getValue() == 'Demon') {
+		  char.rotation.y -= 0.1;
+		}		
 	}
 }
 
 var count =0; 
-var velocidadeOmbroDireitoC = -0.01;
-var velocidadeOmbroDireitoL = -0.01;
-var pulando = false;
-var velocidadePulo = 0.5;
-var altura = -1;
-var bateu = false;
 
 var animation = function (k=0){
 	requestAnimationFrame(animation); 
