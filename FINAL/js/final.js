@@ -1,9 +1,9 @@
 var objLoading = function(){
   createSkeleton();
   createVolcano();
-	createDemon();
+  createDemon();
   createTreeScene();
-	createZombie();
+  loadFinishedZ = true;//createZombie();
 };
 
 var ambientLightOn = function (){
