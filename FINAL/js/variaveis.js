@@ -61,7 +61,8 @@ const setAction = function(toAction) {
   if (toAction != activeAction) {
     lastAction = activeAction;
     activeAction = toAction;
-    if (toAction == animationActionsDemon[5] ||
+
+    if (toAction == animationActionsDemon[7] ||
         toAction == animationActionsZombie[5]){ //se é a morte toca uma vez só
       activeAction.clampWhenFinished = true;
       activeAction.loop = THREE.LoopOnce;
@@ -69,6 +70,7 @@ const setAction = function(toAction) {
       activeAction.clampWhenFinished = false;
       activeAction.loop = THREE.LoopRepeat ;
     }
+    
     lastAction.stop();
     activeAction.reset();
     activeAction.play();
