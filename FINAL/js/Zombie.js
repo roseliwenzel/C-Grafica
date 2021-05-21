@@ -6,71 +6,24 @@ function createZombie(){
 			//atribui a cena, colore, reposiciona, rotaciona
 			elementos['zbm'] = obj;
 
-			let animation;
+			let animationZ;
 
-			mixer = new THREE.AnimationMixer(obj);
+			mixerZ = new THREE.AnimationMixer(obj);
 
 			console.log(obj);
 
-			animation = mixer.clipAction(obj.animations[0]);
-			animationActionsZombie.push(animation);
-			activeAction = animation;
-			setAction(animation);
+			animationZ = mixerZ.clipAction(obj.animations[0]);
+			animationActionsZombie.push(animationZ);
+			activeActionZombie = animationZ; 
+			setAction(animationZ);
 
-
-			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
 			loaderFBX.load(
-						'assets/zombie/Zombie Idle.fbx', //arquivo que vamos carregar
-						function(object){
-							let animationAction = mixer.clipAction((object).animations[0]);
-							animationActionsZombie.push(animationAction)         							
-							
-							loaderFBX.load(
-								'assets/zombie/Zombie Damage.fbx', //arquivo que vamos carregar
-								function(object){
-									let animationAction = mixer.clipAction((object).animations[0]);
-									animationActionsZombie.push(animationAction)         
-									activeAction = animationAction;
-									setAction(animationAction);
+				'assets/zombie/Zombie Idle.fbx', //arquivo que vamos carregar
+				function(object){
+					let animationAction = mixerZ.clipAction((object).animations[0]);
+					animationActionsDemon.push(animationAction)         							
+				});
 
-									loaderFBX.load(
-										'assets/zombie/Zombie Walk.fbx', //arquivo que vamos carregar
-										function(object){
-											let animationAction = mixer.clipAction((object).animations[0]);
-											animationActionsZombie.push(animationAction)         
-											activeAction = animationAction;
-											setAction(animationAction);
-
-											loaderFBX.load(
-												'assets/zombie/Zombie_Jump.fbx', //arquivo que vamos carregar
-												function(object){
-													let animationAction = mixer.clipAction((object).animations[0]);
-													animationActionsZombie.push(animationAction)         
-													activeAction = animationAction;
-													setAction(animationAction);
-
-													loaderFBX.load(
-														'assets/zombie/Zombie_Dead.fbx', //arquivo que vamos carregar
-														function(object){
-															let animationAction = mixer.clipAction((object).animations[0]);
-															animationActionsZombie.push(animationAction)         
-															activeAction = animationAction;
-															setAction(animationAction);
-														});
-
-												});
-										});
-								});
-						});
-
-			
-			// //adiciona as animações a GUI
-			animationFolderZombie.add(parametrosGUI, "idleZ");
-			animationFolderZombie.add(parametrosGUI, "DamageZ");
-			animationFolderZombie.add(parametrosGUI, "walkZ");
-			animationFolderZombie.add(parametrosGUI, "JumpZ");
-			animationFolderZombie.add(parametrosGUI, "DeadZ");
-			
 			obj.traverse( function (child){
 					
 					if (child instanceof THREE.Mesh){
@@ -84,25 +37,21 @@ function createZombie(){
 				}
 			);
 
-			obj.scale.y = 0.002;
-			obj.scale.z = 0.002;
-			obj.scale.x = 0.002;
+		  obj.scale.y = 0.002;
+		  obj.scale.z = 0.002;
+		  obj.scale.x = 0.002;
 
 			obj.position.x = -3.5;
 			obj.position.y = -7.5;
 			obj.position.z = -3.5;
 
-			charZ = new THREE.Group();
-			charZ.add(camera);
-			charZ.add(obj);
-			
 			obj.rotation.y -= Math.PI;
 
 			obj.children[0].geometry.computeBoundingBox();
 			let objBox = new THREE.Box3().setFromObject(obj);
 			charBoundingZ = objBox;
 
-			scene.add(charZ);
+			scene.add(obj);
 			console.log("Carregou Zumbi");
 			loadFinishedZ = true;
 		});  

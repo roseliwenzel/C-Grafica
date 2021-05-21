@@ -19,6 +19,7 @@ function createDemon(){
 
 
 			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
+
 			loaderFBX.load(
 						'assets/teste/Demon_Idle.fbx', //arquivo que vamos carregar
 						function(object){

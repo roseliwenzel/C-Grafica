@@ -3,7 +3,8 @@ var objLoading = function(){
   createVolcano();
   createDemon();
   createTreeScene();
-  loadFinishedZ = true;//createZombie();
+  createZombie();
+
 };
 
 var ambientLightOn = function (){
@@ -287,9 +288,11 @@ var animation = function (k=0){
 	requestAnimationFrame(animation); 
 
 	let delta = clock.getDelta();
+	
 
 	if (loadFinishedD && loadFinishedZ){
 		mixer.update(delta);
+		mixerZ.update(delta);
 
 		if (keys['up'] == true){
 			charD.position.z+= demonVelocity*sentidoz[posicaoSentido];

@@ -18,10 +18,12 @@ var demonVelocity = 0.05;
 
 //variaveis para animação
 var mixer;
+var mixerZ;
 var modelReady = false;
 var animationActionsDemon = Array();
 var animationActionsZombie = Array();
 var activeAction;
+var activeActionZombie;
 var lastAction;
 var loadFinishedZ = false;
 var loadFinishedD = false;
