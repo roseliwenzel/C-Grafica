@@ -232,7 +232,8 @@ var soltouBotao = function(e){
 	if (e.keyCode == 40){ // UP
 		keys['up'] = false;
 		setAction(animationActionsDemon[0]);
-		demonVelocity = 0.2;		
+		demonVelocity = 0.2;	
+			
 	}
 }
 
@@ -245,7 +246,7 @@ var apertouButao =  function(e){
 	if (e.keyCode == 32){ // space
 		if (comboChange.getValue() == 'Demon') {
 			setAction(animationActionsDemon[0]);
-			demonVelocity = 0.2;
+			demonVelocity = 0.5;
 		}
 	}
 
@@ -270,11 +271,13 @@ var apertouButao =  function(e){
 	if (e.keyCode == 37){ //left
 		if (comboChange.getValue() == 'Demon') {
 		  char.rotation.y += 0.1;
+		  sentido(-1)
 		}
 	}
 	if (e.keyCode == 39){ // right
 		if (comboChange.getValue() == 'Demon') {
 		  char.rotation.y -= 0.1;
+		  sentido(1);
 		}		
 	}
 }
@@ -290,13 +293,36 @@ var animation = function (k=0){
 		mixer.update(delta);
 
 		if (keys['up'] == true){
-			char.position.z += demonVelocity;
+			char.position.z+= demonVelocity*sentidoz[posicaoSentido];
+			char.position.x+= demonVelocity*sentidox[posicaoSentido];
 		}else if(keys['down'] == true){
-			char.position.z -= demonVelocity;
+			char.position.z-= demonVelocity*sentidoz[posicaoSentido];
+			char.position.x-= demonVelocity*sentidox[posicaoSentido];
 		}
 	}
 
 	renderer.render(scene, camera); //tira uma foto do estado e mostra na tela
+}
+
+function sentido(direcao){
+	if (direcao == -1){
+		if(posicaoSentido == 0){
+			posicaoSentido = 63;
+		}
+		else{
+			posicaoSentido -=  1;
+		}
+	}
+	else{
+		if(posicaoSentido == 63){
+			posicaoSentido = 0;
+		}
+		else{
+			posicaoSentido +=  1;
+		}
+	}
+	
+
 }
 
 window.onload = this.init
