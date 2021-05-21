@@ -232,8 +232,7 @@ var soltouBotao = function(e){
 	if (e.keyCode == 40){ // UP
 		keys['up'] = false;
 		setAction(animationActionsDemon[0]);
-		demonVelocity = 0.2;	
-			
+		demonVelocity = 0.2;		
 	}
 }
 
@@ -270,14 +269,14 @@ var apertouButao =  function(e){
 	}
 	if (e.keyCode == 37){ //left
 		if (comboChange.getValue() == 'Demon') {
-		  char.rotation.y += 0.1;
-		  sentido(-1)
+		  charD.rotation.y += 0.1;
+			sentido(-1);
 		}
 	}
 	if (e.keyCode == 39){ // right
 		if (comboChange.getValue() == 'Demon') {
-		  char.rotation.y -= 0.1;
-		  sentido(1);
+		  charD.rotation.y -= 0.1;
+			sentido(1);
 		}		
 	}
 }
@@ -293,11 +292,11 @@ var animation = function (k=0){
 		mixer.update(delta);
 
 		if (keys['up'] == true){
-			char.position.z+= demonVelocity*sentidoz[posicaoSentido];
-			char.position.x+= demonVelocity*sentidox[posicaoSentido];
+			charD.position.z+= demonVelocity*sentidoz[posicaoSentido];
+			charD.position.x+= demonVelocity*sentidox[posicaoSentido];
 		}else if(keys['down'] == true){
-			char.position.z-= demonVelocity*sentidoz[posicaoSentido];
-			char.position.x-= demonVelocity*sentidox[posicaoSentido];
+			charD.position.z-= demonVelocity*sentidoz[posicaoSentido];
+			charD.position.x-= demonVelocity*sentidox[posicaoSentido];
 		}
 	}
 
@@ -321,7 +320,6 @@ function sentido(direcao){
 			posicaoSentido +=  1;
 		}
 	}
-	
 
 }
 

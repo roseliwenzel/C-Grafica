@@ -3,8 +3,6 @@ var camera; //area de visualização
 var renderer; //responsavel por renderizar tudo
 var controls; //controle do mouser
 
-var char = [];
-
 var parametrosGUI = {};
 var animationFolderDemon;
 var animationFolderZombie;
@@ -32,10 +30,14 @@ var k = 0;
 var comboChange;
 
 //Var para add a camera com o lobo
-var char;
+var charD = [];
+var charBoundingD;
+var charHelperD;
 
-var charBounding;
-var charHelper;
+var charZ = [];
+var charBoundingZ;
+var charHelperZ;
+
 var escala;
 var staticBounding = [];
 
