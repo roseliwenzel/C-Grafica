@@ -43,9 +43,9 @@ function createZombie(){
 
 			obj.position.x = -3.5;
 			obj.position.y = -7.5;
-			obj.position.z = -3.5;
+			obj.position.z = -40;
 
-			obj.rotation.y -= Math.PI;
+			obj.rotation.y -= 0.4;
 
 			obj.children[0].geometry.computeBoundingBox();
 			let objBox = new THREE.Box3().setFromObject(obj);
