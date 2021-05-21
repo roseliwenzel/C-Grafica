@@ -12,7 +12,7 @@ function createTreeScene(){
 							let groundTexture = textureLoad.load("assets/texturas/terrain/lava.jpg"); //busca a imagem
 							groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; //quero que ela se repita
 							groundTexture.encoding = THREE.sRGBEncoding; //padrão cores, sempre que existir será informado
-							groundTexture.repeat.set(25,25); //número de vezes que ela vai se repetir dentro do nosso chão
+							groundTexture.repeat.set(25,25); //número de vezes que ela vai se repetir
 							
 
 

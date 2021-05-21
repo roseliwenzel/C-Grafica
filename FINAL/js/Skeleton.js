@@ -30,7 +30,7 @@ function createSkeleton(){
 
 					ovelha = obj;
 					scene.add(obj);
-					console.log("Carregou Ovelha");
+					console.log("Carregou esqueleto");
 				},//Oque acontece quando terminar!
 				function(andamento){
 					console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );

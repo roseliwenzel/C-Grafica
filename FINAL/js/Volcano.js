@@ -29,7 +29,7 @@ function createVolcano(){
 
 				ovelha = obj;
 				scene.add(obj);
-				console.log("Carregou Ovelha");
+				console.log("Carregou Vulcao");
 			},//Oque acontece quando terminar!
 			function(andamento){
 				console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );
@@ -68,7 +68,7 @@ function createVolcano(){
 	
 					ovelha = obj;
 					scene.add(obj);
-					console.log("Carregou Ovelha");
+					console.log("Carregou Vulcao");
 				},//Oque acontece quando terminar!
 				function(andamento){
 					console.log("Carregou: " + (andamento.loaded / andamento.total)*100 + " %" );

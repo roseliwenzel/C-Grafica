@@ -20,11 +20,11 @@ var directionalLightOn = function () {
 	let light = new THREE.DirectionalLight(0xffffff,1);
 	light.castShadow = true;
 	light.shadow.mapSize.width = 4096;
-  light.shadow.mapSize.height = 4096;
-  light.shadow.camera.left = 1000;
-  light.shadow.camera.bottom = 1000;
-  light.shadow.camera.right = -1000
-  light.shadow.camera.top = -1000;
+	light.shadow.mapSize.height = 4096;
+	light.shadow.camera.left = 1000;
+	light.shadow.camera.bottom = 1000;
+	light.shadow.camera.right = -1000
+	light.shadow.camera.top = -1000;
 
 	light.position.y = 200;
 	light.position.x = 100;

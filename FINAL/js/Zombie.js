@@ -19,7 +19,6 @@ function createZombie(){
 
 
 			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
-				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
 			loaderFBX.load(
 						'assets/zombie/Zombie Idle.fbx', //arquivo que vamos carregar
 						function(object){
@@ -85,9 +84,9 @@ function createZombie(){
 				}
 			);
 
-		  obj.scale.y = 0.002;
-		  obj.scale.z = 0.002;
-		  obj.scale.x = 0.002;
+			obj.scale.y = 0.002;
+			obj.scale.z = 0.002;
+			obj.scale.x = 0.002;
 
 			obj.position.x = -3.5;
 			obj.position.y = -7.5;

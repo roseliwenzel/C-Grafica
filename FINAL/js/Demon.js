@@ -19,7 +19,6 @@ function createDemon(){
 
 
 			//As animações múltiplas devem ser carregadas dessas forma para que seja uma transação.
-				//OBS. Sim é sacanagem mas o mago que tem animação não tem cajado :(
 			loaderFBX.load(
 						'assets/teste/Demon_Idle.fbx', //arquivo que vamos carregar
 						function(object){
