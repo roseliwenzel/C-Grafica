@@ -7,8 +7,17 @@ function createTreeScene(){
 			
 			object.traverse( function ( child ) {
 						if ( child instanceof THREE.Mesh ) {
-							child.material = new THREE.MeshLambertMaterial();
-							child.material.map = new THREE.TextureLoader().load("assets/texturas/Wood.jpg");
+
+							let textureLoad = new THREE.TextureLoader();
+							let groundTexture = textureLoad.load("assets/texturas/terrain/lava.jpg"); //busca a imagem
+							groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping; //quero que ela se repita
+							groundTexture.encoding = THREE.sRGBEncoding; //padrão cores, sempre que existir será informado
+							groundTexture.repeat.set(25,25); //número de vezes que ela vai se repetir dentro do nosso chão
+							
+
+
+							child.material = new THREE.MeshLambertMaterial({map: groundTexture});
+							child.material.map = textureLoad.load("assets/texturas/terrain/lava.jpg");
 							child.material.shininess = 0;
 							child.castShadow = true;
 							child.receiveShadow = true;
